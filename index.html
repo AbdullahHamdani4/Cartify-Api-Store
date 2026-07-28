@@ -7,6 +7,8 @@
   <title>Cartify</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="src/assets/favicon.png">
+
   <style>
     body {
       font-family: 'Inter', sans-serif;
@@ -35,7 +37,7 @@
       </a>
 
       <!-- Search bar -->
-      <!-- <div class="flex-1 max-w-md ml-auto">
+      <div class="flex-1 max-w-md ml-auto">
         <div class="relative">
           <svg class="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor"
             stroke-width="2" viewBox="0 0 24 24">
@@ -45,7 +47,7 @@
           <input id="searchInput" type="text" placeholder="Search products..."
             class="w-full pl-9 pr-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
         </div>
-      </div> -->
+      </div>
 
     </div>
   </header>
@@ -58,13 +60,12 @@
     </div>
 
     <div id="productGrid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
-
+       Loading Products...
     </div>
   </main>
 
-  <div id="productModal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-    <div class="bg-white rounded-xl w-full max-w-3xl max-h-[90vh] overflow-y-auto relative">
-    </div>
+  <div id="productModal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 h-full w-full">
+     
   </div>
 
   <script type="module" src="/src/main.js"></script>

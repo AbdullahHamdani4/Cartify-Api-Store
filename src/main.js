@@ -1,11 +1,14 @@
 import "./style.css";
 
-const productGrid=document.getElementById("productGrid");
-const productModal=document.getElementById("productModal");
-
-const showModal=(product)=>{
+const body=document.querySelector("body")
+const productGrid = document.getElementById("productGrid");
+const productModal = document.getElementById("productModal");
+const searchInput = document.getElementById("searchInput");
+let products=JSON.parse(localStorage.getItem("products"))|| []
+const showModal = (id) => {
+  let product=products.find(each => each.id ===id);
   productModal.classList.remove("hidden");
-  productModal.innerHTML=` <div class="bg-white rounded-xl w-full max-w-3xl max-h-[90vh] overflow-y-auto relative">
+  productModal.innerHTML = ` <div class="bg-white rounded-xl w-full max-w-3xl max-h-[90vh] overflow-y-auto relative">
 
       <!-- Close button -->
       <button id="closeModalBtn" class="absolute top-3 right-3 w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-gray-600 z-10" onclick=closeModal(this)>
@@ -66,21 +69,16 @@ const showModal=(product)=>{
         </div>
       </div>
     </div>`
-  console.log(product);
-}
- 
-function closeModal (element) {
-  element.parentElement.parentElement.classList.add("hidden")
+    body.style.overflowY="hidden"
+  }
+
+function closeModal(element) {
+  element.parentElement.parentElement.classList.add("hidden");
+      body.style.overflowY="visible"
 };
-window.showModal=showModal
-window.closeModal=closeModal
-const apiData = async () => {
-  try {
-    const response = await fetch("https://dummyjson.com/products?skip=50");
-    const data = await response.json();
-    const products = data.products;
-    let mapProducts = products.map((each) => {
-     return `
+
+function createProductCart(each) {
+  return `
      <div class="product-card group relative bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition-shadow" data-id="1">
 
         <!-- Discount badge -->
@@ -101,17 +99,48 @@ const apiData = async () => {
            </div>
           <button
             class="read-more-btn mt-3 w-full text-sm font-medium border border-gray-900 text-gray-900 rounded-md py-1.5 hover:bg-gray-900 hover:text-white transition-colors"
-            data-id="1" onclick='showModal(${JSON.stringify(each)})'>
+            data-id="1" onclick='showModal(${each.id})'>
             Read more
           </button>
         </div>
       </div>
      `
+}
+window.showModal = showModal
+window.closeModal = closeModal
+const apiData = async () => {
+  try {
+    const response = await fetch("https://dummyjson.com/products?skip=50");
+    const data = await response.json();
+    const productsFromApiResponse = data.products;
+    localStorage.setItem("products", JSON.stringify(productsFromApiResponse));
+    products=JSON.parse(localStorage.getItem("products"));
+    let mapProducts = products.map((each) => {
+      return createProductCart(each)
     });
-    productGrid.innerHTML=mapProducts.join("");
-    
+    productGrid.innerHTML = mapProducts.join("");
+
   } catch (error) {
     console.log(error);
   }
 };
+const searchHandler = (valueFromSeachBar) => {
+   if (valueFromSeachBar === "") {
+    productGrid.innerHTML = (products.map(each => createProductCart(each))).join("")
+  }
+  else {
+    let filterProducts = products.filter((each) => {
+      if (each.title.toLowerCase().trim().includes(valueFromSeachBar.toLowerCase())) return each
+    }).map((each) => {
+      return createProductCart(each)
+    });
+    if(filterProducts.length===0) productGrid.innerHTML="No Products Found..."
+    else productGrid.innerHTML = filterProducts.join("");
+  }
+};
+
 apiData()
+
+searchInput.addEventListener("input", () => {
+  searchHandler(searchInput.value.trim())
+})
